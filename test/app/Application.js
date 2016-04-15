@@ -9,7 +9,8 @@ Ext.define('My.Application', {
     ],
 
     controllers: [
-        'Root@Ticket.controller'
+        'Root@Ticket.controller',
+        'Regular'
     ],
 
     onBeforeLaunch: function () {

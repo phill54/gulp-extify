@@ -112,7 +112,7 @@ describe('gulp-extify', function(){
         });
 
         describe("model", function () {
-            it("should handle model defitions of stores like commmon depdendencies", function () {
+            it("should handle model defitions of stores like commmon dependencies", function () {
                 sort([
                     fixture("app/Application.js"),
                     fixture("app/controller/Root.js"),
@@ -121,8 +121,79 @@ describe('gulp-extify', function(){
                     fixture("app/base/Root.js")
 
                 ], function(resultFiles) {
+                    //console.log(resultFiles);
                     resultFiles.length.should.equal(5);
                     resultFiles.indexOf("app"+path.sep+"model"+path.sep+"MyModel.js").should.be.below(resultFiles.indexOf("app"+path.sep+"store"+path.sep+"MyStore.js"));
+                });
+            });
+        });
+
+        describe("controller-deps", function () {
+            describe("subcontrollers", function () {
+                it("should handle application subcontrollers like dependencies", function () {
+                    sort([
+                        fixture("app/Application.js"), // <-- file contains controller/Regular as subcontroller
+                        fixture("app/controller/Regular.js"), // <-- should be loaded before app/Application
+                    ], function(resultFiles) {
+                        resultFiles.length.should.equal(2);
+                        resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Regular.js")
+                            .should.be.below(resultFiles.indexOf("app"+path.sep+"Application.js"));
+                    })
+                });
+            });
+
+            describe("views", function () {
+                it("should handle controller views like dependencies", function () {
+                    sort([
+                        fixture("app/Application.js"),
+                        fixture("app/controller/Regular.js"),
+                        fixture("app/model/RegularByController.js"),
+                        fixture("app/model/Regular.js"),
+                        fixture("app/store/Regular.js"),
+                        fixture("app/view/Regular/Panel.js"),
+                    ], function(resultFiles) {
+                        resultFiles.length.should.equal(6);
+                        resultFiles.indexOf("app"+path.sep+"view"+path.sep+"Regular"+path.sep+"Panel.js")
+                            .should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Regular.js"));
+                    })
+                });
+            });
+
+            describe("stores", function () {
+                it("should handle application subcontrollers like dependencies", function () {
+                    sort([
+                        fixture("app/Application.js"),
+                        fixture("app/controller/Regular.js"),
+                        fixture("app/model/RegularByController.js"),
+                        fixture("app/model/Regular.js"),
+                        fixture("app/store/Regular.js"),
+                        fixture("app/view/Regular/Panel.js"),
+                    ], function(resultFiles) {
+                        resultFiles.length.should.equal(6);
+                        resultFiles.indexOf("app"+path.sep+"store"+path.sep+"Regular.js")
+                            .should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Regular.js"));
+                    })
+                });
+            });
+
+            describe("models", function () {
+                it("should handle controller models like dependencies", function () {
+                    sort([
+                        fixture("app/Application.js"),
+                        fixture("app/controller/Regular.js"),
+                        fixture("app/model/RegularByController.js"),
+                        fixture("app/model/Regular.js"),
+                        fixture("app/store/Regular.js"),
+                        fixture("app/view/Regular/Panel.js"),
+                    ], function (resultFiles) {
+                        resultFiles.length.should.equal(6);
+                        resultFiles.indexOf("app"+path.sep+"model"+path.sep+"Regular.js")
+                            .should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Regular.js"));
+                        resultFiles.indexOf("app"+path.sep+"model"+path.sep+"Regular.js")
+                            .should.be.below(resultFiles.indexOf("app"+path.sep+"store"+path.sep+"Regular.js"));
+                        resultFiles.indexOf("app"+path.sep+"model"+path.sep+"RegularByController.js")
+                            .should.be.below(resultFiles.indexOf("app"+path.sep+"controller"+path.sep+"Regular.js"));
+                    });
                 });
             });
         });

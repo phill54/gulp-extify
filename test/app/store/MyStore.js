@@ -1,7 +1,7 @@
 /**
  *
  */
-Ext.define('My.store.MyStore', {
+Ext.define('My.store.Regular', {
     extend: 'Ext.data.Store',
-    model: 'My.model.MyModel'
+    model: 'My.model.Regular'
 });
